@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Light based on Energy Price</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Title Section -->
+    <div style="text-align: center; padding: 10px; border-bottom: 1px solid #ccc;">
+        <h1>Trafikklys for vedfyring</h1>
+    </div>
+
+    <!-- Settings and Main Content Section -->
+    <div style="display: flex; padding: 10px;">
+        <!-- Settings Section -->
+        <div id="settings" style="width: 25%; padding: 10px; border-right: 1px solid #ccc;">
+            <!--<h2>Innstillinger</h2> -->
+          
+            <label for="price-area">Velg prisområde:</label>
+            <select id="price-area" onchange="getEnergyPrice()">
+                <option value="NO1">NO1</option>
+                <option value="NO2">NO2</option>
+                <option value="NO3" selected>NO3</option>
+                <option value="NO4">NO4</option>
+                <option value="NO5">NO5</option>
+            </select>
+            <br><br>
+            <label for="company">Nettselskap:</label>
+            <select id="company" onchange="getEnergyPrice()">
+                <option value="Eviny" selected>Eviny</option>
+            </select>
+        </div>
+
+        <!-- Main Content -->
+        <div style="flex-grow: 1; padding: 10px;">
+            <div class="traffic-light">
+                <div id="red" class="light"></div>
+                <div id="yellow" class="light"></div>
+                <div id="green" class="light"></div>
+            </div>
+            <br>
+            <button onclick="getEnergyPrice()" style="margin-top: 10px;">Sjekk!</button>
+
+            <p id="red-text" style="display: none;">Raudt lys: bruk elektrisitet!</p>
+            <p id="yellow-text" style="display: none;">Gult lys: Det er lite forskjell. Varmepumpe vil nok lønne seg.</p>
+            <p id="green-text" style="display: none;">Grønt lys: fyr i peisen!</p>
+
+            <br><br>
+            <p>Full pris i sone: <span id="totalPrice"></span></p>
+            <p>Pris utan MVA: <span id="exVatPrice"></span></p>
+            <p>Strømstøtte: <span id="subsidizedPrice"></span></p>
+            <p>Pris med støtte: <span id="adjustedPrice"></span></p>
+            <p><strong>Pris inkludert nettleige: <span id="inklNettleige"></span></strong></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
