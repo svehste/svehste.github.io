@@ -89,22 +89,37 @@ function updateTrafficLight(price) {
     //This section is for the calculation of net-rent. There are several companies. 
     const company = document.getElementById('company').value;
 
-    if (company === "Eviny") {
-        if (month >= 1 && month <= 3) {
-            if (currentHour >= startHour && currentHour < endHour) {
-                inklNettleige = adjustedPrice + 0.5025; //Day
-            } else {
-                inklNettleige = adjustedPrice + 0.3786; //Night
-            } 
-        } else if (month >= 4 && month <= 12) {
-            if (currentHour >= startHour && currentHour < endHour) {
-                inklNettleige = adjustedPrice + 0.5925; //Day
-            } else {
-                inklNettleige = adjustedPrice + 0.4652; //Night
-            } 
-        }
+    let janMarDay;
+    let janMarNight
+    let aprDesDay;
+    let aprDesNight; 
+
+    if (company === 'Eviny') {
+        janMarDay = 0.5025
+        janMarNight = 0.3786
+        aprDesDay = 0.5925
+        aprDesNight = 0.4652
+    } else if (company === 'Glitre') {
+        janMarDay = 0.4469
+        janMarNight = 0.3269
+        aprDesDay = 0.5300
+        aprDesNight = 0.4100
     }
- 
+
+    if (month >= 1 && month <= 3) {
+        if (currentHour >= startHour && currentHour < endHour) {
+            inklNettleige = adjustedPrice + janMarDay; //Day
+        } else {
+            inklNettleige = adjustedPrice + janMarNight; //Night
+        } 
+    } else if (month >= 4 && month <= 12) {
+        if (currentHour >= startHour && currentHour < endHour) {
+            inklNettleige = adjustedPrice + aprDesDay; //Day
+        } else {
+            inklNettleige = adjustedPrice + aprDesNight; //Night
+        } 
+    }
+
 
     //To display on the web page
     document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
