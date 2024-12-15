@@ -100,17 +100,20 @@ function updateTrafficLight(price) {
     document.getElementById('inklNettleige').textContent = inklNettleige.toFixed(2);
 
     // Determine the light color based on the price
+    const lumberPrice = document.getElementById('lumberPrice').value;
     
-    if (inklNettleige <= 1.0) {
+
+    if (inklNettleige >= lumberPrice) {
+        document.getElementById('green').style.backgroundColor = 'green';
+        document.getElementById('green-text').style.display = 'block';
+    } else if (lumberPrice >= inklNettleige * 1.10) {
         document.getElementById('red').style.backgroundColor = 'red';
         document.getElementById('red-text').style.display = 'block';
-    } else if (inklNettleige >= 1.01 && inklNettleige <= 1.29) {
+    } else {
         document.getElementById('yellow').style.backgroundColor = 'yellow';
         document.getElementById('yellow-text').style.display = 'block';
-    } else if (inklNettleige >= 1.30) {
-        document.getElementById('green').style.backgroundColor = 'green';
-        document.getElementById('green-text').style.display = 'block'; 
     }
+    
 }
 
 // Call the getEnergyPrice function when the page loads
