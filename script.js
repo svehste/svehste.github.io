@@ -34,6 +34,19 @@ function getEnergyPrice() {
         });
 }
 
+// Function to calculate the price of the wood
+function getWoodPrice(){
+    const weight = document.getElementById('volume').value;
+    const purchasePrice = document.getElementById('purchasePrice').value;
+    const efficiency = document.getElementById('efficiency').value; 
+
+    //woodPrice = purchasePrice / ((4,32 kwh/kg x weight) x efficiency)
+    const woodPrice = purchasePrice / ((4.32*weight)*(efficiency/100));
+    // Update the wood price display 
+    document.getElementById('woodPrice').textContent = woodPrice.toFixed(2);
+    
+    return woodPrice;
+}
 
 // Function to update the traffic light color based on the price
 function updateTrafficLight(price) {
@@ -65,7 +78,7 @@ function updateTrafficLight(price) {
     //Find the new and adjusted price
     const adjustedPrice = totalPrice - subsidizedPrice;
 
-    // The net rent has one price from january to march, and one price from april to december. It also varies by time of day. It is cheeper at night. 
+    // The net rent has one price from january to march, and one price from april to december. It also varies by time of day. It is cheaper at night. 
     const now = new Date();
     const month = (now.getMonth() + 1).toString().padStart(2, '0');
     const currentHour = now.getHours();
@@ -91,22 +104,24 @@ function updateTrafficLight(price) {
             } 
         }
     }
+ 
 
     //To display on the web page
-    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);;
-    document.getElementById('exVatPrice').textContent = exVatPrice.toFixed(2);;
-    document.getElementById('subsidizedPrice').textContent = subsidizedPrice.toFixed(2);;
+    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+    document.getElementById('exVatPrice').textContent = exVatPrice.toFixed(2);
+    document.getElementById('subsidizedPrice').textContent = subsidizedPrice.toFixed(2);
     document.getElementById('adjustedPrice').textContent = adjustedPrice.toFixed(2);
     document.getElementById('inklNettleige').textContent = inklNettleige.toFixed(2);
 
     // Determine the light color based on the price
-    const lumberPrice = document.getElementById('lumberPrice').value;
+    //const woodPrice = document.getElementById('woodPrice').value;
     
+    const woodPrice = getWoodPrice();
 
-    if (inklNettleige >= lumberPrice) {
+    if (inklNettleige >= woodPrice) {
         document.getElementById('green').style.backgroundColor = 'green';
         document.getElementById('green-text').style.display = 'block';
-    } else if (lumberPrice >= inklNettleige * 1.10) {
+    } else if (woodPrice >= inklNettleige * 1.10) {
         document.getElementById('red').style.backgroundColor = 'red';
         document.getElementById('red-text').style.display = 'block';
     } else {
@@ -117,7 +132,9 @@ function updateTrafficLight(price) {
 }
 
 // Call the getEnergyPrice function when the page loads
-window.onload = getEnergyPrice;
 
 
+window.onload = function() { 
+    getEnergyPrice(); 
+};
 
