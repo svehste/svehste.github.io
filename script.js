@@ -34,6 +34,8 @@ function getEnergyPrice() {
         });
 }
 
+
+
 // Function to calculate the price of the wood
 function getWoodPrice(){
     const weight = document.getElementById('volume').value;
@@ -47,6 +49,8 @@ function getWoodPrice(){
     
     return woodPrice;
 }
+
+
 
 // Function to update the traffic light color based on the price
 function updateTrafficLight(price) {
@@ -78,6 +82,7 @@ function updateTrafficLight(price) {
     //Find the new and adjusted price
     const adjustedPrice = totalPrice - subsidizedPrice;
 
+    //This section is for the calculation of net-rent. There are several companies. 
     // The net rent has one price from january to march, and one price from april to december. It also varies by time of day. It is cheaper at night. 
     const now = new Date();
     const month = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -86,7 +91,6 @@ function updateTrafficLight(price) {
     const endHour = 22;
     let inklNettleige;
 
-    //This section is for the calculation of net-rent. There are several companies. 
     const company = document.getElementById('company').value;
 
     let janMarDay;
