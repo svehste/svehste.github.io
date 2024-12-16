@@ -36,7 +36,7 @@ function getEnergyPrice() {
 
 
 
-// Function to calculate the price of the wood
+// Function to calculate the price of the wood. Source: https://www.norskved.no/slik-beregner-du-energiprisen-for-vedfyring
 function getWoodPrice(){
     const weight = document.getElementById('volume').value;
     const purchasePrice = document.getElementById('purchasePrice').value;
