@@ -89,9 +89,8 @@ function updateTrafficLight(price) {
     const currentHour = now.getHours();
     const startHour = 7;
     const endHour = 22;
-    let inklNettleige;
-
-    const company = document.getElementById('company').value;
+    
+    const company = document.getElementById('company').value; //User input company.
 
     let janMarDay;
     let janMarNight
@@ -110,13 +109,15 @@ function updateTrafficLight(price) {
         aprDesNight = 0.4100
     }
 
-    if (month >= 1 && month <= 3) {
+    let inklNettleige; //The final electricity price with all included. 
+
+    if (month >= 1 && month <= 3) { //January to March
         if (currentHour >= startHour && currentHour < endHour) {
             inklNettleige = adjustedPrice + janMarDay; //Day
         } else {
             inklNettleige = adjustedPrice + janMarNight; //Night
         } 
-    } else if (month >= 4 && month <= 12) {
+    } else if (month >= 4 && month <= 12) { //April to December
         if (currentHour >= startHour && currentHour < endHour) {
             inklNettleige = adjustedPrice + aprDesDay; //Day
         } else {
@@ -124,8 +125,7 @@ function updateTrafficLight(price) {
         } 
     }
 
-
-    //To display on the web page
+    //To display a breakdown of all electricity prices on the web page
     document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
     document.getElementById('exVatPrice').textContent = exVatPrice.toFixed(2);
     document.getElementById('subsidizedPrice').textContent = subsidizedPrice.toFixed(2);
@@ -133,9 +133,8 @@ function updateTrafficLight(price) {
     document.getElementById('inklNettleige').textContent = inklNettleige.toFixed(2);
 
     // Determine the light color based on the price
-    //const woodPrice = document.getElementById('woodPrice').value;
     
-    const woodPrice = getWoodPrice();
+    const woodPrice = getWoodPrice(); //Calculate the price of wood based on user input. 
 
     if (inklNettleige >= woodPrice) {
         document.getElementById('green').style.backgroundColor = 'green';
