@@ -5,21 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traffic Light based on Energy Price</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!--Library for creating charts-->
+    <!--Library for creating charts-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.3.0"></script>
+
 
 </head>
 <body>
-    <!-- Title Section -->
+    <!-- Title Section 
     <div style="text-align: center; padding: 10px; border-bottom: 1px solid #ccc;">
         <h1>Trafikklys for vedfyring</h1>
-    </div>
+
+    </div> -->
 
     <!-- Settings and Main Content Section -->
     <div style="display: flex; padding: 10px;">
         <!-- Settings Section -->
-        <div id="settings" style="width: 25%; padding: 10px; border-right: 1px solid #ccc;">
+        <div id="settings" style="width: 35%; padding: 10px; border-right: 1px solid #ccc;">
             <!--<h2>Innstillinger</h2> -->
-            <p><strong>Strømpris</strong></p>
+            <p><strong>Sone og nettselskap </strong></p>
             <label for="price-area">Prisområde:</label>
             <select id="price-area" onchange="getEnergyPrice()">
                 <option value="NO1">NO1</option>
@@ -34,6 +38,7 @@
                 <option value="Eviny" selected>Eviny</option>
                 <option value="Glitre">Glitre</option>
             </select>
+
             <br><br>
             <p><strong>Vedpris</strong></p>
             <label for="volume">Volum: </label>
@@ -59,6 +64,12 @@
 
         <!-- Main Content -->
         <div style="flex-grow: 1; padding: 10px;">
+            <div style="position: absolute; top: 10px; right: 10px;">
+                <button onclick="getEnergyPrice()" style="margin-top: 10px;">Oppdater</button>
+            </div>
+            <!-- Canvas for Chart.js --> 
+            <canvas id="energyChart" width="400" height="200"></canvas>
+
             <div class="traffic-light">
                 <div id="red" class="light"></div>
                 <div id="yellow" class="light"></div>
@@ -69,18 +80,11 @@
             <p id="yellow-text" style="display: none;">Gult lys: Det er lite forskjell. Varmepumpe vil nok lønne seg.</p>
             <p id="green-text" style="display: none;">Grønt lys: fyr i peisen!</p>
 
-            <br>
-            <button onclick="getEnergyPrice()" style="margin-top: 10px;">Oppdater!</button>
-
-            <br><br>
             <p>Full pris i sone: <span id="totalPrice"></span></p>
             <p>Pris utan MVA: <span id="exVatPrice"></span></p>
             <p>Strømstøtte: <span id="subsidizedPrice"></span></p>
             <p>Pris med støtte: <span id="adjustedPrice"></span></p>
             <p><strong>Pris inkl. nettleige kr/kwh: <span id="inklNettleige"></span></strong></p>
-
-            <!-- Canvas for Chart.js --> 
-            <canvas id="energyChart" width="400" height="200"></canvas>
         </div>
     </div>
 

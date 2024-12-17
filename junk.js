@@ -24,7 +24,7 @@ function getEnergyPrice() {
             const energyPrices = data.map(item => calculatePrice(item.NOK_per_kWh));
             const woodPrice = getWoodPrice(); // Get the wood price
 
-            drawChart(energyPrices, woodPrice,currentHour); // Draw the chart with fetched data
+            drawChart(energyPrices, woodPrice, currentHour); // Draw the chart with fetched data
 
             // Find the price for the current hour
             const currentHourPrice = data.find(item => {
@@ -59,7 +59,7 @@ function calculatePrice(price) {
     const exVatPrice = price; //Must be made into a const in order to display it on the webpage
     const totalPrice = exVatPrice * 1.25; //The price including VAT
 
-    let subsidizedPrice; //To check if the price is over the treshold for subsidizing.
+    let subsidizedPrice; //To check if the price is over the threshold for subsidizing.
     if (exVatPrice > 0.73) {
         const subsidizeBase = exVatPrice - 0.73;
         subsidizedPrice = subsidizeBase * 0.9 * 1.25;
@@ -179,13 +179,30 @@ function drawChart(energyPrices, woodPrice, currentHour) {
                         text: 'Prisen (NOK/kWh)'
                     }
                 },
+                plugins: {
+                    annotation: { 
+                        annotations: { 
+                            currentHourLine: { 
+                                type: 'line', 
+                                xMin: currentHour + 1, 
+                                xMax: currentHour + 1, 
+                                borderColor: 'red', 
+                                borderWidth: 2, 
+                                label: { 
+                                    content: 'Current Hour', 
+                                    enabled: true, 
+                                    position: 'top' 
+                                } 
+                            } 
+                        } 
+                    }
+                }
             }
         }
     });
 }
 
-
-// Call the updateCurrentHour and getEnergyPrice function when the page loads
+// Call the getEnergyPrice function when the page loads
 window.onload = function() { 
-    getEnergyPrice();
+    getEnergyPrice(); 
 };
