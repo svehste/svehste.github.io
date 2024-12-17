@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traffic Light based on Energy Price</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!--Library for creating charts-->
+
 </head>
 <body>
     <!-- Title Section -->
@@ -76,6 +78,9 @@
             <p>Strømstøtte: <span id="subsidizedPrice"></span></p>
             <p>Pris med støtte: <span id="adjustedPrice"></span></p>
             <p><strong>Pris inkl. nettleige kr/kwh: <span id="inklNettleige"></span></strong></p>
+
+            <!-- Canvas for Chart.js --> 
+            <canvas id="energyChart" width="400" height="200"></canvas>
         </div>
     </div>
 
