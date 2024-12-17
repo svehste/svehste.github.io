@@ -23,7 +23,7 @@
         <!-- Settings Section -->
         <div id="settings" style="width: 35%; padding: 10px; border-right: 1px solid #ccc;">
             <!--<h2>Innstillinger</h2> -->
-            <p><strong>Sone og nettselskap </strong></p>
+            <h3>Prissone og nettselskap</h3>
             <label for="price-area">Prisområde:</label>
             <select id="price-area" onchange="getEnergyPrice()">
                 <option value="NO1">NO1</option>
@@ -38,9 +38,10 @@
                 <option value="Eviny" selected>Eviny</option>
                 <option value="Glitre">Glitre</option>
             </select>
+            <p>Straum inkl. nettleige denne timen (kr/kwh): <strong><span id="inklNettleige"></span></strong></p>
 
             <br><br>
-            <p><strong>Vedpris</strong></p>
+            <h3>Vedpris</h3>
             <label for="volume">Volum: </label>
             <select id="volume" onchange="getEnergyPrice()">
                 <option value="11">30 L</option>
@@ -57,7 +58,7 @@
             <label for="efficiency">Ovnens effektivitet: </label>
             <input id="efficiency" value="77" style="width: 30px" onchange="getEnergyPrice()">
             <br><br>
-            <p><strong>Vedpris i kr/kwh: <span id="woodPrice"></span></strong></p>
+            <p>Vedpris i kr/kwh: <strong><span id="woodPrice"></span></strong></p>
             <!--<label for="woodPrice">Vedpris i kroner/kwh:</label> 
             <input type="number" id="woodPrice" step="0.01" value="1.30" style="width: 50px;" onchange="getEnergyPrice()"> -->
         </div>
