@@ -1,3 +1,5 @@
+let energyChart; // Global variable to store the chart instance
+
 // Function to fetch the energy price from Tibber API using GraphQL
 function getEnergyPrice() {
     const now = new Date();
@@ -5,6 +7,7 @@ function getEnergyPrice() {
     const month = (now.getMonth() + 1).toString().padStart(2, '0');
     const day = now.getDate().toString().padStart(2, '0');
     const currentTime = now.toISOString();
+    const currentHour = now.getHours();
 
     const priceArea = document.getElementById('price-area').value;
     const url = `https://www.hvakosterstrommen.no/api/v1/prices/${year}/${month}-${day}_${priceArea}.json`;
@@ -17,6 +20,12 @@ function getEnergyPrice() {
             return response.json();
         })
         .then(data => {
+            // Find the price for each hour and update the chart
+            const energyPrices = data.map(item => calculatePrice(item.NOK_per_kWh));
+            const woodPrice = getWoodPrice(); // Get the wood price
+
+            drawChart(energyPrices, woodPrice,currentHour); // Draw the chart with fetched data
+
             // Find the price for the current hour
             const currentHourPrice = data.find(item => {
                 return currentTime >= item.time_start && currentTime < item.time_end;
@@ -34,107 +43,101 @@ function getEnergyPrice() {
         });
 }
 
-
-
 // Function to calculate the price of the wood. Source: https://www.norskved.no/slik-beregner-du-energiprisen-for-vedfyring
 function getWoodPrice(){
     const weight = document.getElementById('volume').value;
     const purchasePrice = document.getElementById('purchasePrice').value;
     const efficiency = document.getElementById('efficiency').value; 
 
-    //woodPrice = purchasePrice / ((4,32 kwh/kg x weight) x efficiency)
-    const woodPrice = purchasePrice / ((4.32*weight)*(efficiency/100));
-    // Update the wood price display 
+    const woodPrice = purchasePrice / ((4.32 * weight) * (efficiency / 100));
     document.getElementById('woodPrice').textContent = woodPrice.toFixed(2);
-    
+
     return woodPrice;
 }
 
+function calculatePrice(price) {
+    const exVatPrice = price; //Must be made into a const in order to display it on the webpage
+    const totalPrice = exVatPrice * 1.25; //The price including VAT
 
+    let subsidizedPrice; //To check if the price is over the treshold for subsidizing.
+    if (exVatPrice > 0.73) {
+        const subsidizeBase = exVatPrice - 0.73;
+        subsidizedPrice = subsidizeBase * 0.9 * 1.25;
+    } else {
+        subsidizedPrice = 0;
+    }
+
+    const adjustedPrice = totalPrice - subsidizedPrice;
+
+    //Adding the net-rent. Price is different depending on month and time of day. 
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const currentHour = now.getHours();
+    const startHour = 7;
+    const endHour = 22;
+
+    const company = document.getElementById('company').value; //Get which company the user has selected. 
+
+    let janMarDay, janMarNight, aprDesDay, aprDesNight;
+
+    if (company === 'Eviny') {
+        janMarDay = 0.5025;
+        janMarNight = 0.3786;
+        aprDesDay = 0.5925;
+        aprDesNight = 0.4652;
+    } else if (company === 'Glitre') {
+        janMarDay = 0.4469;
+        janMarNight = 0.3269;
+        aprDesDay = 0.5300;
+        aprDesNight = 0.4100;
+    }
+
+    let inklNettleige;
+
+    if (month >= 1 && month <= 3) {
+        if (currentHour >= startHour && currentHour < endHour) {
+            inklNettleige = adjustedPrice + janMarDay;
+        } else {
+            inklNettleige = adjustedPrice + janMarNight;
+        }
+    } else if (month >= 4 && month <= 12) {
+        if (currentHour >= startHour && currentHour < endHour) {
+            inklNettleige = adjustedPrice + aprDesDay;
+        } else {
+            inklNettleige = adjustedPrice + aprDesNight;
+        }
+    }
+    //Display the different prices on the web page. 
+    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+    document.getElementById('exVatPrice').textContent = exVatPrice.toFixed(2);
+    document.getElementById('subsidizedPrice').textContent = subsidizedPrice.toFixed(2);
+    document.getElementById('adjustedPrice').textContent = adjustedPrice.toFixed(2);
+    //document.getElementById('inklNettleige').textContent = inklNettleige.toFixed(2);
+    updateInklNettleige(inklNettleige);
+
+    return inklNettleige;
+}
+
+// Function to update all elements with the class 'inklNettleige'
+function updateInklNettleige(value) {
+    const elements = document.querySelectorAll('.inklNettleige');
+    elements.forEach(element => {
+        element.textContent = value.toFixed(2);
+    });
+}
 
 // Function to update the traffic light color based on the price
 function updateTrafficLight(price) {
-    // Turn off all lights and remove text
+    //Remove all text and colors
     document.getElementById('red').style.backgroundColor = '#333';
     document.getElementById('yellow').style.backgroundColor = '#333';
     document.getElementById('green').style.backgroundColor = '#333';
     document.getElementById('red-text').style.display = 'none';
     document.getElementById('yellow-text').style.display = 'none';
-    document.getElementById('green-text').style.display = 'none'; 
+    document.getElementById('green-text').style.display = 'none';
 
-    //Formula for calculation: (Spotpris uten mva. pr time i ditt prisområde - 73 øre) x 0,90 (strømstøtte i prosent) x 1,25 (mva.)
-
-    //The API is fetching the price witout VAT. I make this const to display it on the webpage.
-    const exVatPrice = price;
-
-    // Calculating the price including VAT.
-    const totalPrice = (exVatPrice * 1.25);
-
-    //Handling if the price is below the threshold for subsizing (0.73). 
-    let subsidizeBase;
-    let subsidizedPrice;
-    if (exVatPrice > 0.73) {
-        subsidizeBase = exVatPrice - 0.73;
-        subsidizedPrice = subsidizeBase * 0.9 * 1.25; //The state only subsidizes 90% of the price, and we add the VAT again. 
-    } else {
-        subsidizedPrice = 0 // No subsidy if the price is below the threshold
-    }
-    //Find the new and adjusted price
-    const adjustedPrice = totalPrice - subsidizedPrice;
-
-    //This section is for the calculation of net-rent. There are several companies. 
-    // The net rent has one price from january to march, and one price from april to december. It also varies by time of day. It is cheaper at night. 
-    const now = new Date();
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    const currentHour = now.getHours();
-    const startHour = 7;
-    const endHour = 22;
-    
-    const company = document.getElementById('company').value; //User input company.
-
-    let janMarDay;
-    let janMarNight
-    let aprDesDay;
-    let aprDesNight; 
-
-    if (company === 'Eviny') {
-        janMarDay = 0.5025
-        janMarNight = 0.3786
-        aprDesDay = 0.5925
-        aprDesNight = 0.4652
-    } else if (company === 'Glitre') {
-        janMarDay = 0.4469
-        janMarNight = 0.3269
-        aprDesDay = 0.5300
-        aprDesNight = 0.4100
-    }
-
-    let inklNettleige; //The final electricity price with all included. 
-
-    if (month >= 1 && month <= 3) { //January to March
-        if (currentHour >= startHour && currentHour < endHour) {
-            inklNettleige = adjustedPrice + janMarDay; //Day
-        } else {
-            inklNettleige = adjustedPrice + janMarNight; //Night
-        } 
-    } else if (month >= 4 && month <= 12) { //April to December
-        if (currentHour >= startHour && currentHour < endHour) {
-            inklNettleige = adjustedPrice + aprDesDay; //Day
-        } else {
-            inklNettleige = adjustedPrice + aprDesNight; //Night
-        } 
-    }
-
-    //To display a breakdown of all electricity prices on the web page
-    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
-    document.getElementById('exVatPrice').textContent = exVatPrice.toFixed(2);
-    document.getElementById('subsidizedPrice').textContent = subsidizedPrice.toFixed(2);
-    document.getElementById('adjustedPrice').textContent = adjustedPrice.toFixed(2);
-    document.getElementById('inklNettleige').textContent = inklNettleige.toFixed(2);
-
-    // Determine the light color based on the price
-    
-    const woodPrice = getWoodPrice(); //Calculate the price of wood based on user input. 
+    const inklNettleige = calculatePrice(price); //Calculate the electricity price
+    const woodPrice = getWoodPrice(); //Calculate the price of wood
 
     if (inklNettleige >= woodPrice) {
         document.getElementById('green').style.backgroundColor = 'green';
@@ -146,13 +149,52 @@ function updateTrafficLight(price) {
         document.getElementById('yellow').style.backgroundColor = 'yellow';
         document.getElementById('yellow-text').style.display = 'block';
     }
-    
 }
 
-// Call the getEnergyPrice function when the page loads
+//Function for drawing the chart
+function drawChart(energyPrices, woodPrice, currentHour) {
+    //If the chart already exists, it needs to be reset
+    if (energyChart) { 
+        energyChart.destroy(); 
+    }
+    const ctx = document.getElementById('energyChart').getContext('2d');
+    energyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Array.from({ length: 24 }, (_, i) => (i + 1).toString()), 
+            datasets: [{
+                label: 'Straumpris inkl. nettleige (NOK/kWh)',
+                data: energyPrices,
+                borderColor: 'blue',
+                fill: false
+            }, {
+                label: 'Vedprisen (NOK/kWh)',
+                data: Array(24).fill(woodPrice),
+                borderColor: 'green',
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Timar i døgnet'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Prisen (NOK/kWh)'
+                    }
+                },
+            }
+        }
+    });
+}
 
 
+// Call the updateCurrentHour and getEnergyPrice function when the page loads
 window.onload = function() { 
-    getEnergyPrice(); 
+    getEnergyPrice();
 };
-

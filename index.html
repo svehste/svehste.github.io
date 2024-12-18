@@ -5,19 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traffic Light based on Energy Price</title>
     <link rel="stylesheet" href="styles.css">
+    <!--Library for creating charts-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.3.0"></script>
+
+
 </head>
 <body>
-    <!-- Title Section -->
+    <!-- Title Section 
     <div style="text-align: center; padding: 10px; border-bottom: 1px solid #ccc;">
         <h1>Trafikklys for vedfyring</h1>
-    </div>
+
+    </div> -->
 
     <!-- Settings and Main Content Section -->
     <div style="display: flex; padding: 10px;">
         <!-- Settings Section -->
-        <div id="settings" style="width: 25%; padding: 10px; border-right: 1px solid #ccc;">
+        <div id="settings" style="width: 35%; padding: 10px; border-right: 1px solid #ccc;">
             <!--<h2>Innstillinger</h2> -->
-            <p><strong>Strømpris</strong></p>
+            <h3>Prissone og nettselskap</h3>
             <label for="price-area">Prisområde:</label>
             <select id="price-area" onchange="getEnergyPrice()">
                 <option value="NO1">NO1</option>
@@ -32,8 +38,10 @@
                 <option value="Eviny" selected>Eviny</option>
                 <option value="Glitre">Glitre</option>
             </select>
+            <p>Straum inkl. nettleige denne timen (kr/kwh): <strong><span class="inklNettleige"></span></strong></p>
+
             <br><br>
-            <p><strong>Vedpris</strong></p>
+            <h3>Vedpris</h3>
             <label for="volume">Volum: </label>
             <select id="volume" onchange="getEnergyPrice()">
                 <option value="11">30 L</option>
@@ -44,19 +52,24 @@
                 <option value="450" selected>1500 L</option>
             </select>
             <br><br>
+
             <label for="purchasePrice">Kjøpspris: </label>
             <input id="purchasePrice" value="2000" style="width: 40px" onchange="getEnergyPrice()">
             <br><br>
             <label for="efficiency">Ovnens effektivitet: </label>
             <input id="efficiency" value="77" style="width: 30px" onchange="getEnergyPrice()">
             <br><br>
-            <p><strong>Vedpris i kr/kwh: <span id="woodPrice"></span></strong></p>
-            <!--<label for="woodPrice">Vedpris i kroner/kwh:</label> 
-            <input type="number" id="woodPrice" step="0.01" value="1.30" style="width: 50px;" onchange="getEnergyPrice()"> -->
-        </div>
+            <p>Vedpris i kr/kwh: <strong><span id="woodPrice"></span></strong></p>
 
-        <!-- Main Content -->
-        <div style="flex-grow: 1; padding: 10px;">
+            <br><br>
+            <h3>Utrekning straumpris denne timen</h3>
+
+            <p>Full pris i sone: <span id="totalPrice"></span></p>
+            <p>Pris utan MVA: <span id="exVatPrice"></span></p>
+            <p>Strømstøtte: <span id="subsidizedPrice"></span></p>
+            <p>Pris med støtte: <span id="adjustedPrice"></span></p>
+            <p>Pris inkl. nettleige kr/kwh: <span class="inklNettleige"></span></p>
+
             <div class="traffic-light">
                 <div id="red" class="light"></div>
                 <div id="yellow" class="light"></div>
@@ -66,16 +79,18 @@
             <p id="red-text" style="display: none;">Raudt lys: bruk elektrisitet!</p>
             <p id="yellow-text" style="display: none;">Gult lys: Det er lite forskjell. Varmepumpe vil nok lønne seg.</p>
             <p id="green-text" style="display: none;">Grønt lys: fyr i peisen!</p>
+            <!--<label for="woodPrice">Vedpris i kroner/kwh:</label> 
+            <input type="number" id="woodPrice" step="0.01" value="1.30" style="width: 50px;" onchange="getEnergyPrice()"> -->
+        </div>
 
-            <br>
-            <button onclick="getEnergyPrice()" style="margin-top: 10px;">Oppdater!</button>
+        <!-- Main Content -->
+        <div style="flex-grow: 1; padding: 10px;">
+            <div style="position: absolute; top: 10px; right: 10px;">
+                <button onclick="getEnergyPrice()" style="margin-top: 10px;">Oppdater</button>
+            </div>
+            <!-- Canvas for Chart.js --> 
+            <canvas id="energyChart" width="400" height="200"></canvas>
 
-            <br><br>
-            <p>Full pris i sone: <span id="totalPrice"></span></p>
-            <p>Pris utan MVA: <span id="exVatPrice"></span></p>
-            <p>Strømstøtte: <span id="subsidizedPrice"></span></p>
-            <p>Pris med støtte: <span id="adjustedPrice"></span></p>
-            <p><strong>Pris inkl. nettleige kr/kwh: <span id="inklNettleige"></span></strong></p>
         </div>
     </div>
 
