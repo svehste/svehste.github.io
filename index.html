@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traffic Light based on Energy Price</title>
+    <title>Ved eller el?</title>
     <link rel="stylesheet" href="styles.css">
     <!--Library for creating charts-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -23,7 +23,7 @@
         <!-- Settings Section -->
         <div id="settings" style="width: 35%; padding: 10px; border-right: 1px solid #ccc;">
             <!--<h2>Innstillinger</h2> -->
-            <h3>Prissone og nettselskap</h3>
+            <h3>Prisområde og nettselskap</h3>
             <label for="price-area">Prisområde:</label>
             <select id="price-area" onchange="getEnergyPrice()">
                 <option value="NO1">NO1</option>
@@ -56,7 +56,7 @@
             <label for="purchasePrice">Kjøpspris: </label>
             <input id="purchasePrice" value="2000" style="width: 40px" onchange="getEnergyPrice()">
             <br><br>
-            <label for="efficiency">Ovnens effektivitet: </label>
+            <label for="efficiency">Omnens effektivitet: </label>
             <input id="efficiency" value="77" style="width: 30px" onchange="getEnergyPrice()">
             <br><br>
             <p>Vedpris i kr/kwh: <strong><span id="woodPrice"></span></strong></p>
@@ -66,7 +66,7 @@
 
             <p>Full pris i sone: <span id="totalPrice"></span></p>
             <p>Pris utan MVA: <span id="exVatPrice"></span></p>
-            <p>Strømstøtte: <span id="subsidizedPrice"></span></p>
+            <p>Straumstøtte: <span id="subsidizedPrice"></span></p>
             <p>Pris med støtte: <span id="adjustedPrice"></span></p>
             <p>Pris inkl. nettleige kr/kwh: <span class="inklNettleige"></span></p>
 
