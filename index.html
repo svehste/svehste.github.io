@@ -38,7 +38,7 @@
                 <option value="Eviny" selected>Eviny</option>
                 <option value="Glitre">Glitre</option>
             </select>
-            <p>Straum inkl. nettleige denne timen (kr/kwh): <strong><span id="inklNettleige"></span></strong></p>
+            <p>Straum inkl. nettleige denne timen (kr/kwh): <strong><span class="inklNettleige"></span></strong></p>
 
             <br><br>
             <h3>Vedpris</h3>
@@ -52,6 +52,7 @@
                 <option value="450" selected>1500 L</option>
             </select>
             <br><br>
+
             <label for="purchasePrice">Kjøpspris: </label>
             <input id="purchasePrice" value="2000" style="width: 40px" onchange="getEnergyPrice()">
             <br><br>
@@ -59,6 +60,25 @@
             <input id="efficiency" value="77" style="width: 30px" onchange="getEnergyPrice()">
             <br><br>
             <p>Vedpris i kr/kwh: <strong><span id="woodPrice"></span></strong></p>
+
+            <br><br>
+            <h3>Utrekning straumpris denne timen</h3>
+
+            <p>Full pris i sone: <span id="totalPrice"></span></p>
+            <p>Pris utan MVA: <span id="exVatPrice"></span></p>
+            <p>Strømstøtte: <span id="subsidizedPrice"></span></p>
+            <p>Pris med støtte: <span id="adjustedPrice"></span></p>
+            <p>Pris inkl. nettleige kr/kwh: <span class="inklNettleige"></span></p>
+
+            <div class="traffic-light">
+                <div id="red" class="light"></div>
+                <div id="yellow" class="light"></div>
+                <div id="green" class="light"></div>
+            </div>
+
+            <p id="red-text" style="display: none;">Raudt lys: bruk elektrisitet!</p>
+            <p id="yellow-text" style="display: none;">Gult lys: Det er lite forskjell. Varmepumpe vil nok lønne seg.</p>
+            <p id="green-text" style="display: none;">Grønt lys: fyr i peisen!</p>
             <!--<label for="woodPrice">Vedpris i kroner/kwh:</label> 
             <input type="number" id="woodPrice" step="0.01" value="1.30" style="width: 50px;" onchange="getEnergyPrice()"> -->
         </div>
@@ -71,21 +91,6 @@
             <!-- Canvas for Chart.js --> 
             <canvas id="energyChart" width="400" height="200"></canvas>
 
-            <div class="traffic-light">
-                <div id="red" class="light"></div>
-                <div id="yellow" class="light"></div>
-                <div id="green" class="light"></div>
-            </div>
-
-            <p id="red-text" style="display: none;">Raudt lys: bruk elektrisitet!</p>
-            <p id="yellow-text" style="display: none;">Gult lys: Det er lite forskjell. Varmepumpe vil nok lønne seg.</p>
-            <p id="green-text" style="display: none;">Grønt lys: fyr i peisen!</p>
-
-            <p>Full pris i sone: <span id="totalPrice"></span></p>
-            <p>Pris utan MVA: <span id="exVatPrice"></span></p>
-            <p>Strømstøtte: <span id="subsidizedPrice"></span></p>
-            <p>Pris med støtte: <span id="adjustedPrice"></span></p>
-            <p><strong>Pris inkl. nettleige kr/kwh: <span id="inklNettleige"></span></strong></p>
         </div>
     </div>
 

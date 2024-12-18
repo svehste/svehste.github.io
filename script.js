@@ -112,9 +112,18 @@ function calculatePrice(price) {
     document.getElementById('exVatPrice').textContent = exVatPrice.toFixed(2);
     document.getElementById('subsidizedPrice').textContent = subsidizedPrice.toFixed(2);
     document.getElementById('adjustedPrice').textContent = adjustedPrice.toFixed(2);
-    document.getElementById('inklNettleige').textContent = inklNettleige.toFixed(2);
+    //document.getElementById('inklNettleige').textContent = inklNettleige.toFixed(2);
+    updateInklNettleige(inklNettleige);
 
     return inklNettleige;
+}
+
+// Function to update all elements with the class 'inklNettleige'
+function updateInklNettleige(value) {
+    const elements = document.querySelectorAll('.inklNettleige');
+    elements.forEach(element => {
+        element.textContent = value.toFixed(2);
+    });
 }
 
 // Function to update the traffic light color based on the price
