@@ -181,7 +181,7 @@ function drawChart(energyPrices, woodPrice, currentHour,heatpumpPrice) {
                 borderColor: 'green',
                 fill: false
             },{
-                label: 'Varmepumpepris (NOK/kWh)',
+                label: 'Estimert varmepumpepris (NOK/kWh)',
                 data: heatpumpPrice,
                 borderColor: 'red',
                 fill: false
