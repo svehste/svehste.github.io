@@ -112,12 +112,15 @@ function calculatePrice(price) {
             inklNettleige = adjustedPrice + aprDesNight;
         }
     }
+
+    const heatpumpPrice = inklNettleige / heatpumpefficiency(); //Calculate the price of the heat pump
+    
     //Display the different prices on the web page. 
     document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
     document.getElementById('exVatPrice').textContent = exVatPrice.toFixed(2);
     document.getElementById('subsidizedPrice').textContent = subsidizedPrice.toFixed(2);
     document.getElementById('adjustedPrice').textContent = adjustedPrice.toFixed(2);
-    //document.getElementById('inklNettleige').textContent = inklNettleige.toFixed(2);
+    document.getElementById('heatpumpPrice').textContent = heatpumpPrice.toFixed(2);
     updateInklNettleige(inklNettleige);
 
     return inklNettleige;
