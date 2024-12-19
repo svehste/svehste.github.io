@@ -24,7 +24,17 @@ function getEnergyPrice() {
             const energyPrices = data.map(item => calculatePrice(item.NOK_per_kWh));
             const woodPrice = getWoodPrice(); // Get the wood price
 
-            drawChart(energyPrices, woodPrice,currentHour); // Draw the chart with fetched data
+            // Check if the heatpump is checked
+            const heatpump = document.getElementById('heatpump').checked;
+
+            if (heatpump === true) {
+                const heatpumpEfficiency = heatpumpefficiency();
+                const heatpumpPrice = data.map(item => calculatePrice(item.NOK_per_kWh) / heatpumpEfficiency);
+                drawChart(heatpumpPrice, woodPrice, currentHour);
+            } else {
+                drawChart(energyPrices, woodPrice,currentHour); // Draw the chart with fetched data
+            }
+
 
             // Find the price for the current hour
             const currentHourPrice = data.find(item => {
@@ -193,7 +203,23 @@ function drawChart(energyPrices, woodPrice, currentHour) {
     });
 }
 
+function heatpumpefficiency() {
 
+    const outsideTemp = document.getElementById('outsideTemp').value;
+    let COP; //Coefficient of performance for the heat pump
+
+    if (outsideTemp >= 0) {
+        COP = 4;
+    } else if (outsideTemp < 0 && outsideTemp >= -7) {
+        COP = 3.2;
+    } else if (outsideTemp < -7 && outsideTemp >= -15) {
+        COP = 2.0;
+    } else if (outsideTemp < -15 && outsideTemp >= -20) {
+        COP = 2.4;
+    }
+
+    return heatpumpefficiency;
+}
 // Call the updateCurrentHour and getEnergyPrice function when the page loads
 window.onload = function() { 
     getEnergyPrice();
