@@ -24,17 +24,12 @@ function getEnergyPrice() {
             const energyPrices = data.map(item => calculatePrice(item.NOK_per_kWh));
             const woodPrice = getWoodPrice(); // Get the wood price
 
-            // Check if the heatpump is checked
-            const heatpump = document.getElementById('heatpump').checked;
+            // Calculate the price for the heat pump
+            const heatpumpEfficiency = heatpumpefficiency();
+            const heatpumpPrice = data.map(item => calculatePrice(item.NOK_per_kWh) / heatpumpEfficiency);
+            
 
-            if (heatpump === true) {
-                const heatpumpEfficiency = heatpumpefficiency();
-                const heatpumpPrice = data.map(item => calculatePrice(item.NOK_per_kWh) / heatpumpEfficiency);
-                drawChart(heatpumpPrice, woodPrice, currentHour);
-            } else {
-                drawChart(energyPrices, woodPrice,currentHour); // Draw the chart with fetched data
-            }
-
+            drawChart(energyPrices, woodPrice,currentHour,heatpumpPrice); // Draw the chart with fetched data
 
             // Find the price for the current hour
             const currentHourPrice = data.find(item => {
@@ -162,7 +157,7 @@ function updateTrafficLight(price) {
 }
 
 //Function for drawing the chart
-function drawChart(energyPrices, woodPrice, currentHour) {
+function drawChart(energyPrices, woodPrice, currentHour,heatpumpPrice) {
     //If the chart already exists, it needs to be reset
     if (energyChart) { 
         energyChart.destroy(); 
@@ -181,6 +176,11 @@ function drawChart(energyPrices, woodPrice, currentHour) {
                 label: 'Vedprisen (NOK/kWh)',
                 data: Array(24).fill(woodPrice),
                 borderColor: 'green',
+                fill: false
+            },{
+                label: 'Varmepumpepris (NOK/kWh)',
+                data: heatpumpPrice,
+                borderColor: 'red',
                 fill: false
             }]
         },
@@ -218,7 +218,7 @@ function heatpumpefficiency() {
         COP = 2.4;
     }
 
-    return heatpumpefficiency;
+    return COP;
 }
 // Call the updateCurrentHour and getEnergyPrice function when the page loads
 window.onload = function() { 
