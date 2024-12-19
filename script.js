@@ -24,7 +24,12 @@ function getEnergyPrice() {
             const energyPrices = data.map(item => calculatePrice(item.NOK_per_kWh));
             const woodPrice = getWoodPrice(); // Get the wood price
 
-            drawChart(energyPrices, woodPrice,currentHour); // Draw the chart with fetched data
+            // Calculate the price for the heat pump
+            const heatpumpEfficiency = heatpumpCOP();
+            const heatpumpPrice = data.map(item => calculatePrice(item.NOK_per_kWh) / heatpumpEfficiency);
+            
+
+            drawChart(energyPrices, woodPrice,currentHour,heatpumpPrice); // Draw the chart with fetched data
 
             // Find the price for the current hour
             const currentHourPrice = data.find(item => {
@@ -107,12 +112,15 @@ function calculatePrice(price) {
             inklNettleige = adjustedPrice + aprDesNight;
         }
     }
+
+    const heatpumpPrice = inklNettleige / heatpumpCOP(); //Calculate the price of the heat pump
+
     //Display the different prices on the web page. 
     document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
     document.getElementById('exVatPrice').textContent = exVatPrice.toFixed(2);
     document.getElementById('subsidizedPrice').textContent = subsidizedPrice.toFixed(2);
     document.getElementById('adjustedPrice').textContent = adjustedPrice.toFixed(2);
-    //document.getElementById('inklNettleige').textContent = inklNettleige.toFixed(2);
+    document.getElementById('heatpumpPrice').textContent = heatpumpPrice.toFixed(2);
     updateInklNettleige(inklNettleige);
 
     return inklNettleige;
@@ -152,7 +160,7 @@ function updateTrafficLight(price) {
 }
 
 //Function for drawing the chart
-function drawChart(energyPrices, woodPrice, currentHour) {
+function drawChart(energyPrices, woodPrice, currentHour,heatpumpPrice) {
     //If the chart already exists, it needs to be reset
     if (energyChart) { 
         energyChart.destroy(); 
@@ -171,6 +179,11 @@ function drawChart(energyPrices, woodPrice, currentHour) {
                 label: 'Vedprisen (NOK/kWh)',
                 data: Array(24).fill(woodPrice),
                 borderColor: 'green',
+                fill: false
+            },{
+                label: 'Estimert varmepumpepris (NOK/kWh)',
+                data: heatpumpPrice,
+                borderColor: 'red',
                 fill: false
             }]
         },
@@ -193,7 +206,29 @@ function drawChart(energyPrices, woodPrice, currentHour) {
     });
 }
 
+function heatpumpCOP() {
 
+    const outsideTemp = document.getElementById('outsideTemp').value;
+    let COP; //Coefficient of performance for the heat pump
+
+    if (outsideTemp >= 0) {
+        COP = 4.8;
+    } else if (outsideTemp < 0 && outsideTemp >= -4) {
+        COP = 4.1;
+    } else if (outsideTemp < -4 && outsideTemp >= -7) {
+        COP = 3.1;
+    } else if (outsideTemp < -7 && outsideTemp >= -10) {
+        COP = 2.5;
+    } else if (outsideTemp < -10 && outsideTemp >= -15) {
+        COP = 2.3;
+    } else {
+        COP = 1.6;
+    }
+
+    document.getElementById('heatpumpCOP').textContent = COP.toFixed(2);
+
+    return COP;
+}
 // Call the updateCurrentHour and getEnergyPrice function when the page loads
 window.onload = function() { 
     getEnergyPrice();
