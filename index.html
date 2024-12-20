@@ -61,13 +61,7 @@
             <p>Varmepumpepris (kr/kwh): <strong><span class=heatpumpPrice></span></strong></p>
 
             <br><br>
-            <h3>Utrekning straumpris denne timen</h3>
 
-            <p>Full pris i sone: <span id="totalPrice"></span></p>
-            <p>Pris utan MVA: <span id="exVatPrice"></span></p>
-            <p>Straumstøtte: <span id="subsidizedPrice"></span></p>
-            <p>Pris med støtte: <span id="adjustedPrice"></span></p>
-            <p>Pris inkl. nettleige kr/kwh: <span class="inklNettleige"></span></p>
 
             <div class="traffic-light">
                 <div id="red" class="light"></div>
@@ -95,6 +89,13 @@
                 <input id = "outsideTemp" type="number" value="7" style="width: 40px" onchange="getEnergyPrice()"> -->
                 <p>Ved oppgitt temperatur så kan vi estimere ein COP på: <span id=heatpumpCOP></span></p>
                 <p>Då kan vi dele straumprisen på COP, og varmepumpepris denne timen blir dermed (kr/kwh): <strong><span class=heatpumpPrice></span></strong></p>
+                <br><br>
+                <h3>Utrekning straumpris denne timen</h3>
+                <p>Full pris i sone: <span id="totalPrice"></span></p>
+                <p>Pris utan MVA: <span id="exVatPrice"></span></p>
+                <p>Straumstøtte: <span id="subsidizedPrice"></span></p>
+                <p>Pris med støtte: <span id="adjustedPrice"></span></p>
+                <p>Pris inkl. nettleige kr/kwh: <span class="inklNettleige"></span></p>
             </div>
 
             
