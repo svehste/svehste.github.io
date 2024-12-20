@@ -51,8 +51,14 @@
             <br><br>
             <label for="efficiency">Omnens effektivitet: </label>
             <input id="efficiency" value="77" style="width: 30px" onchange="getEnergyPrice()">
-            <br><br>
             <p>Vedpris i kr/kwh: <strong><span id="woodPrice"></span></strong></p>
+
+            <br><br>
+
+            <h3>Varmepumpe</h3>
+            <label for="outsideTemp">Utetemperatur: </label>
+            <input id="outsideTemp" type="number" value="7" style="width: 40px" onchange="getEnergyPrice()">
+            <p>Varmepumpepris (kr/kwh): <strong><span class=heatpumpPrice></span></strong></p>
 
             <br><br>
             <h3>Utrekning straumpris denne timen</h3>
@@ -88,7 +94,7 @@
                 <label for="outsideTemp">Utetemperatur: </label>
                 <input id = "outsideTemp" type="number" value="7" style="width: 40px" onchange="getEnergyPrice()">
                 <p>Ved oppgitt temperatur så kan vi estimere ein COP på: <span id=heatpumpCOP></span></p>
-                <p>Då kan vi dele straumprisen på COP, og varmepumpepris denne timen blir dermed (kr/kwh): <strong><span id=heatpumpPrice></span></strong></p>
+                <p>Då kan vi dele straumprisen på COP, og varmepumpepris denne timen blir dermed (kr/kwh): <strong><span class=heatpumpPrice></span></strong></p>
             </div>
 
             
