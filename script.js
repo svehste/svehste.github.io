@@ -11,7 +11,7 @@ function getEnergyPrice() {
 
     const priceArea = document.getElementById('price-area').value;
     const url = `https://www.hvakosterstrommen.no/api/v1/prices/${year}/${month}-${day}_${priceArea}.json`;
-
+    
     fetch(url)
         .then(response => {
             if (!response.ok) {
@@ -21,20 +21,27 @@ function getEnergyPrice() {
         })
         .then(data => {
             // Find the price for each hour and update the chart
-            const energyPrices = data.map(item => calculatePrice(item.NOK_per_kWh));
-
+            const energyPrices = data.map(item => ({
+                time: item.time_start,
+                price: calculatePrice(item.NOK_per_kWh)
+            }));
             const woodPrice = getWoodPrice(); // Get the wood price
-
+    
             // Calculate the price for the heat pump
             const heatpumpEfficiency = heatpumpCOP();
-            const heatpumpPrice = data.map(item => calculatePrice(item.NOK_per_kWh) / heatpumpEfficiency);
-            
-
-            drawChart(energyPrices, woodPrice,currentHour,heatpumpPrice); // Draw the chart with fetched data
-
+            const heatpumpPrices = data.map(item => ({
+                time: item.time_start,
+                price: calculatePrice(item.NOK_per_kWh) / heatpumpEfficiency
+            }));
+    
+            drawChart(energyPrices, woodPrice, currentHour, heatpumpPrices); // Draw the chart with fetched data
+    
             // Find the price for the current hour
             const currentHourPrice = data.find(item => {
-                return currentTime >= item.time_start && currentTime < item.time_end;
+                const startTime = new Date(item.time_start).getTime();
+                const endTime = new Date(item.time_end).getTime();
+                const currentTimeMs = new Date(currentTime).getTime();
+                return currentTimeMs >= startTime && currentTimeMs < endTime;
             });
 
             if (currentHourPrice) {
@@ -168,9 +175,9 @@ function updateTrafficLight(price) {
     }
 }
 
-//Function for drawing the chart
-function drawChart(energyPrices, woodPrice, currentHour,heatpumpPrice) {
-    //If the chart already exists, it needs to be reset
+/// Function for drawing the chart
+function drawChart(energyPrices, woodPrice, currentHour, heatpumpPrices) {
+    // If the chart already exists, it needs to be reset
     if (energyChart) { 
         energyChart.destroy(); 
     }
@@ -178,10 +185,10 @@ function drawChart(energyPrices, woodPrice, currentHour,heatpumpPrice) {
     energyChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: Array.from({ length: 24 }, (_, i) => (i + 1).toString()), 
+            labels: Array.from({ length: 24 }, (_, i) => i), // Labels from 0 to 23
             datasets: [{
                 label: 'Straumpris inkl. nettleige (NOK/kWh)',
-                data: energyPrices,
+                data: energyPrices.map(item => item.price), // Extract price values
                 borderColor: 'blue',
                 fill: false
             }, {
@@ -191,7 +198,7 @@ function drawChart(energyPrices, woodPrice, currentHour,heatpumpPrice) {
                 fill: false
             },{
                 label: 'Estimert varmepumpepris (NOK/kWh)',
-                data: heatpumpPrice,
+                data: heatpumpPrices.map(item => item.price), // Extract price values
                 borderColor: 'red',
                 fill: false
             }]
@@ -202,6 +209,9 @@ function drawChart(energyPrices, woodPrice, currentHour,heatpumpPrice) {
                     title: {
                         display: true,
                         text: 'Timar i døgnet'
+                    },
+                    ticks: {
+                        stepSize: 1
                     }
                 },
                 y: {
