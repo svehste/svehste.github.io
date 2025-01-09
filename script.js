@@ -20,7 +20,7 @@ function getEnergyPrice() {
             return response.json();
         })
         .then(data => {
-            // Find the price for each hour and update the chart
+            // Find the price for each hour and update the chart. Use time_start as x-axis and NOK_per_kWh as y-axis.
             const energyPrices = data.map(item => ({
                 time: item.time_start,
                 price: calculatePrice(item.NOK_per_kWh)
@@ -36,7 +36,7 @@ function getEnergyPrice() {
     
             drawChart(energyPrices, woodPrice, currentHour, heatpumpPrices); // Draw the chart with fetched data
     
-            // Find the price for the current hour
+            // Find the price for the current hour. Using Date.getTime() to compare the time_start and time_end with the current time to ensure the correct format.
             const currentHourPrice = data.find(item => {
                 const startTime = new Date(item.time_start).getTime();
                 const endTime = new Date(item.time_end).getTime();
@@ -211,7 +211,7 @@ function drawChart(energyPrices, woodPrice, currentHour, heatpumpPrices) {
                         text: 'Timar i døgnet'
                     },
                     ticks: {
-                        stepSize: 1
+                        stepSize: 1 // Show hours starting at 0 and ending at 23.
                     }
                 },
                 y: {
