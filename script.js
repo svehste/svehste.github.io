@@ -21,13 +21,18 @@ function getEnergyPrice() {
         })
         .then(data => {
             // Find the price for each hour and update the chart
-            const energyPrices = data.map(item => calculatePrice(item.NOK_per_kWh));
+            const energyPrices = data.map(item => ({
+                time: item.time_start,
+                price: calculatePrice(item.NOK_per_kWh)
+            }));
             const woodPrice = getWoodPrice(); // Get the wood price
 
             // Calculate the price for the heat pump
             const heatpumpEfficiency = heatpumpCOP();
-            const heatpumpPrice = data.map(item => calculatePrice(item.NOK_per_kWh) / heatpumpEfficiency);
-            
+            const heatpumpPrices = data.map(item => ({
+                time: item.time_start,
+                price: calculatePrice(item.NOK_per_kWh) / heatpumpEfficiency
+            }));
 
             drawChart(energyPrices, woodPrice,currentHour,heatpumpPrice); // Draw the chart with fetched data
 
