@@ -1,6 +1,6 @@
 let energyChart; // Global variable to store the chart instance
 
-// Function to fetch the energy price from Tibber API using GraphQL
+// Function to fetch the energy price from hvakosterstrommen.no API. This function will also draw the chart and update the traffic light.
 function getEnergyPrice() {
     const now = new Date();
     const year = now.getFullYear();
