@@ -21,19 +21,25 @@ function getEnergyPrice() {
         })
         .then(data => {
             // Find the price for each hour and update the chart. Use time_start as x-axis and NOK_per_kWh as y-axis.
-            const energyPrices = data.map(item => ({
-                time: item.time_start,
-                price: calculatePrice(item.NOK_per_kWh)
-            }));
+            const energyPrices = data.map(item => {
+                const prices = calculatePrice(item.NOK_per_kWh);
+                return {
+                    time: item.time_start,
+                    price: prices.inklNettleige
+                };
+            });
+
             const woodPrice = getWoodPrice(); // Get the wood price
     
             // Calculate the price for the heat pump
             const heatpumpEfficiency = heatpumpCOP();
-            const heatpumpPrices = data.map(item => ({
-                time: item.time_start,
-                price: calculatePrice(item.NOK_per_kWh) / heatpumpEfficiency
-            }));
-    
+            const heatpumpPrices = data.map(item => {
+                const prices = calculatePrice(item.NOK_per_kWh);
+                return {
+                    time: item.time_start,
+                    price: prices.heatpumpPrice 
+                };
+            });
             drawChart(energyPrices, woodPrice, currentHour, heatpumpPrices); // Draw the chart with fetched data
     
             // Find the price for the current hour. Using Date.getTime() to compare the time_start and time_end with the current time to ensure the correct format.
@@ -106,22 +112,28 @@ function calculatePrice(price) {
     }
 
     let inklNettleige;
+    let nettleige;
 
     if (month >= 1 && month <= 3) {
         if (currentHour >= startHour && currentHour < endHour) {
             inklNettleige = adjustedPrice + janMarDay;
+            nettleige = janMarDay;
         } else {
             inklNettleige = adjustedPrice + janMarNight;
+            nettleige = janMarNight;
         }
     } else if (month >= 4 && month <= 12) {
         if (currentHour >= startHour && currentHour < endHour) {
             inklNettleige = adjustedPrice + aprDesDay;
+            nettleige = aprDesDay;
         } else {
             inklNettleige = adjustedPrice + aprDesNight;
+            nettleige = aprDesNight;
         }
     }
 
-    const heatpumpPrice = inklNettleige / heatpumpCOP(); //Calculate the price of the heat pump
+
+    const heatpumpPrice = (adjustedPrice / heatpumpCOP()) + nettleige; //Calculate the price of the heat pump
 
     //Display the different prices on the web page. 
     document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
@@ -131,7 +143,7 @@ function calculatePrice(price) {
     updateInklNettleige(inklNettleige);
     updateHeatpumpPrice(heatpumpPrice);
 
-    return inklNettleige;
+    return {inklNettleige, heatpumpPrice};
 }
 
 // Function to update all elements with the class 'inklNettleige'
@@ -160,7 +172,7 @@ function updateTrafficLight(price) {
     document.getElementById('yellow-text').style.display = 'none';
     document.getElementById('green-text').style.display = 'none';
 
-    const inklNettleige = calculatePrice(price); //Calculate the electricity price
+    const {inklNettleige} = calculatePrice(price); //Calculate the electricity price. The brackets to extract the inklNettleige value, since calculatePrice returns heatpumpPrice as well.
     const woodPrice = getWoodPrice(); //Calculate the price of wood
 
     if (inklNettleige >= woodPrice) {
