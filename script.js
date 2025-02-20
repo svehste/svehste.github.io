@@ -79,8 +79,8 @@ function calculatePrice(price) {
     const totalPrice = exVatPrice * 1.25; //The price including VAT
 
     let subsidizedPrice; //To check if the price is over the treshold for subsidizing.
-    if (exVatPrice > 0.73) {
-        const subsidizeBase = exVatPrice - 0.73;
+    if (exVatPrice > 0.75) {
+        const subsidizeBase = exVatPrice - 0.75;
         subsidizedPrice = subsidizeBase * 0.9 * 1.25;
     } else {
         subsidizedPrice = 0;
