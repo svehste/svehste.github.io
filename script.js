@@ -260,6 +260,91 @@ function heatpumpCOP() {
 
     return COP;
 }
+
+// Function to fetch the temperature on your longitude and latitude
+function getTemperature() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const hour = now.getHours().toString().padStart(2, '0');
+    const currentHour = `${year}-${month}-${day}T${hour}:00:00Z`; // Format current time to match the API response
+  
+
+    console.log("Current hour:", currentHour); 
+    
+    navigator.geolocation.getCurrentPosition(position => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+    
+        if (typeof latitude === 'undefined' || typeof longitude === 'undefined') {
+            console.error("Latitude or longitude is undefined. Using default values for Bergen.");
+            latitude = 61.4;
+            longitude = 5.4;
+        }
+        console.log("Latitude:", latitude);
+        console.log("Longitude:",longitude);
+        // Proceed with fetching the temperature using the latitude and longitude
+        const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${latitude}&lon=${longitude}`;
+    
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const currentHour = new Date().toISOString().slice(0, 13) + ":00:00Z"; // Format current time to match the API response
+                const currentHourData = data.properties.timeseries.find(item => item.time === currentHour);
+                if (currentHourData) {
+                    const temperature = currentHourData.data.instant.details.air_temperature;
+                    console.log("Temperature:", temperature);
+                    document.getElementById('outsideTemp').value = temperature;
+                    getEnergyPrice();
+                } else {
+                    console.error("No matching data found for the current hour.");
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching data from API:", error);
+            });
+    }, error => {
+        console.error("Error getting location:", error);
+        // Use default location if geolocation fails
+        const latitude = 61.4;
+        const longitude = 5.4;
+        console.log("Latitude:", latitude);
+        console.log("Longitude:",longitude);
+
+        // Proceed with fetching the temperature using the default latitude and longitude
+        const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${latitude}&lon=${longitude}`;
+    
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const currentHour = new Date().toISOString().slice(0, 13) + ":00:00Z"; // Format current time to match the API response
+                const currentHourData = data.properties.timeseries.find(item => item.time === currentHour);
+                if (currentHourData) {
+                    const temperature = currentHourData.data.instant.details.air_temperature;
+                    console.log("Temperature:", temperature);
+                    document.getElementById('outsideTemp').value = temperature;
+                    getEnergyPrice();
+                } else {
+                    console.error("No matching data found for the current hour.");
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching data from API:", error);
+            });
+    });
+}
+
 // Call the updateCurrentHour and getEnergyPrice function when the page loads
 window.onload = function() { 
     getEnergyPrice();
