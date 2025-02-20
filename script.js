@@ -273,10 +273,12 @@ function getTemperature() {
 
     console.log("Current hour:", currentHour); 
     
+    //Use the builtin geolocation api in the browser to find the longitude and latitude
     navigator.geolocation.getCurrentPosition(position => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-    
+
+    //If the geolocation yields an undefined value, use the default values for Bergen. Error handling for the geolocation is done further down, but this fixes a bug with undefined values. 
         if (typeof latitude === 'undefined' || typeof longitude === 'undefined') {
             console.error("Latitude or longitude is undefined. Using default values for Bergen.");
             latitude = 61.4;
@@ -284,6 +286,7 @@ function getTemperature() {
         }
         console.log("Latitude:", latitude);
         console.log("Longitude:",longitude);
+
         // Proceed with fetching the temperature using the latitude and longitude
         const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${latitude}&lon=${longitude}`;
     
@@ -296,12 +299,12 @@ function getTemperature() {
             })
             .then(data => {
                 const currentHour = new Date().toISOString().slice(0, 13) + ":00:00Z"; // Format current time to match the API response
-                const currentHourData = data.properties.timeseries.find(item => item.time === currentHour);
+                const currentHourData = data.properties.timeseries.find(item => item.time === currentHour); // Find the data for the current hour
                 if (currentHourData) {
                     const temperature = currentHourData.data.instant.details.air_temperature;
                     console.log("Temperature:", temperature);
-                    document.getElementById('outsideTemp').value = temperature;
-                    getEnergyPrice();
+                    document.getElementById('outsideTemp').value = temperature; // Update the temperature input field
+                    getEnergyPrice(); // Fetch the energy price after updating the temperature
                 } else {
                     console.error("No matching data found for the current hour.");
                 }
@@ -309,6 +312,8 @@ function getTemperature() {
             .catch(error => {
                 console.error("Error fetching data from API:", error);
             });
+    
+            //If the geolocation fails, use the default values for Bergen and fetch the temperature using met.no API. Same as above. 
     }, error => {
         console.error("Error getting location:", error);
         // Use default location if geolocation fails
