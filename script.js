@@ -110,15 +110,15 @@ function calculatePrice(price) {
     let janMarDay, janMarNight, aprDesDay, aprDesNight;
 
     if (company === 'Eviny') {
-        janMarDay = 0.5025;
-        janMarNight = 0.3786;
-        aprDesDay = 0.5925;
-        aprDesNight = 0.4652;
+        janMarDay = 0.4613;
+        janMarNight = 0.2329;
+        aprDesDay = 0.4613;
+        aprDesNight = 0.2329;
     } else if (company === 'Glitre') {
-        janMarDay = 0.4469;
-        janMarNight = 0.3269;
-        aprDesDay = 0.5300;
-        aprDesNight = 0.4100;
+        janMarDay = 0.4091;
+        janMarNight = 0.2591;
+        aprDesDay = 0.4091;
+        aprDesNight = 0.2591;
     }
 
     let inklNettleige;
