@@ -143,10 +143,11 @@ function calculatePrice(price) {
     const heatpumpPrice = (adjustedPrice / heatpumpCOP()) + nettleige; //Calculate the price of the heat pump
 
     //Display the different prices on the web page. 
-    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
-    document.getElementById('exVatPrice').textContent = exVatPrice.toFixed(2);
-    document.getElementById('subsidizedPrice').textContent = subsidizedPrice.toFixed(2);
-    document.getElementById('adjustedPrice').textContent = adjustedPrice.toFixed(2);
+    
+    el('totalPrice').textContent = totalPrice.toFixed(2);
+    el('exVatPrice').textContent = exVatPrice.toFixed(2);
+    el('subsidizedPrice').textContent = subsidizedPrice.toFixed(2);
+    el('adjustedPrice').textContent = adjustedPrice.toFixed(2);
     updateInklNettleige(inklNettleige);
     updateHeatpumpPrice(heatpumpPrice);
 
