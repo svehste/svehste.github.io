@@ -1,3 +1,6 @@
+
+
+// Helper function to get element by id and throw an error if not found
 function el(id) {
   const node = document.getElementById(id);
   if (!node) throw new Error(`Missing element id="${id}" in this page`);
