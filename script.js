@@ -1,3 +1,10 @@
+function el(id) {
+  const node = document.getElementById(id);
+  if (!node) throw new Error(`Missing element id="${id}" in this page`);
+  return node;
+}
+
+
 let energyChart; // Global variable to store the chart instance
 
 // Function to fetch the energy price from hvakosterstrommen.no API. This function will also draw the chart and update the traffic light.
