@@ -192,6 +192,22 @@ select, input {
   gap: var(--gap);
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+/* Ensure grid items are allowed to shrink instead of overflowing */
+.cards-3 > * {
+  min-width: 0;
+}
+
+/* Force long headings to wrap inside the card */
+.metric h3 {
+  overflow-wrap: anywhere;   /* best for small screens */
+  word-break: break-word;    /* fallback */
+  hyphens: auto;             /* optional (works best with lang="nn") */
+}
+@media (max-width: 360px) {
+  .metric h3 { font-size: 14px; }
+}
+
+
 .metric-value {
   margin: 6px 0 4px;
   font-size: 34px;
