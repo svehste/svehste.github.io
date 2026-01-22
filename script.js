@@ -262,7 +262,7 @@ function drawChart(energyPrices, woodPrice, currentHour, heatpumpPrices) {
                 x: {
                     title: {
                         display: true,
-                        text: 'Timar i døgnet'
+                        text: 'Klokkeslett (timar)'
                     },
                     ticks: {
                         stepSize: 1 // Show hours starting at 0 and ending at 23.
