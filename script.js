@@ -239,17 +239,17 @@ function drawChart(energyPrices, woodPrice, currentHour, heatpumpPrices) {
         data: {
             labels: Array.from({ length: 24 }, (_, i) => i), // Labels from 0 to 23
             datasets: [{
-                label: 'Straumpris inkl. nettleige (NOK/kWh)',
+                label: 'Straumpris inkl. nettleige',
                 data: energyPrices.map(item => item.price), // Extract price values
                 borderColor: 'blue',
                 fill: false
             }, {
-                label: 'Vedprisen (NOK/kWh)',
+                label: 'Vedprisen',
                 data: Array(24).fill(woodPrice),
                 borderColor: 'green',
                 fill: false
             },{
-                label: 'Estimert varmepumpepris (NOK/kWh)',
+                label: 'Estimert varmepumpepris',
                 data: heatpumpPrices.map(item => item.price), // Extract price values
                 borderColor: 'red',
                 fill: false
