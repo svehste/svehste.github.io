@@ -256,6 +256,8 @@ function drawChart(energyPrices, woodPrice, currentHour, heatpumpPrices) {
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     title: {

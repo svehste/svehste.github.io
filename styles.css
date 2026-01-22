@@ -144,6 +144,9 @@ details { border-radius: 12px; }
   gap: 16px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+@media (max-width: 960px) {
+  .settings-grid { grid-template-columns: 1fr; }
+}
 
 .settings-group {
   border: 1px solid var(--border);
@@ -227,17 +230,20 @@ select, input {
   transition: background-color 0.25s ease;
 }
 
-/* Responsive - will look at this later
+/* Responsive */
 @media (max-width: 960px) {
-  .card-hero { grid-template-columns: 1fr 180px; }
+  .card-hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .hero-traffic {
+    grid-column: auto;
+    justify-items: start; /* or center */
+  }
 }
 
-@media (max-width: 640px) {
-  .card-hero { grid-template-columns: 1fr; }
-  .hero-traffic { justify-items: start; }
-}
 
 @media (max-width: 640px) {
   .chart-wrap { height: 280px; }
 }
-*/
