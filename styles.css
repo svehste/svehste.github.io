@@ -263,3 +263,16 @@ select, input {
 @media (max-width: 640px) {
   .chart-wrap { height: 280px; }
 }
+
+@media (max-width: 480px) {
+  .hero-support {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    line-height: 1.2;
+  }
+
+  .hero-support .dot {
+    display: none;
+  }
+}
