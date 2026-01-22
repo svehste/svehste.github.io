@@ -1,108 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ved eller el?</title>
-    <link rel="stylesheet" href="styles.css">
-    <!--Library for creating charts-->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ved, varmepumpe eller straum?</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Chart library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <!-- Settings and Main Content Section -->
-    <div style="display: flex; padding: 10px;">
-        <!-- Settings Section -->
-        <div id="settings" style="width: 35%; padding: 10px; border-right: 1px solid #ccc;">
-            <!--<h2>Innstillinger</h2> -->
-            <h3>Straum</h3>
-            <label for="price-area">Prisområde:</label>
-            <select id="price-area" onchange="getEnergyPrice()">
-                <option value="NO1">NO1</option>
-                <option value="NO2">NO2</option>
-                <option value="NO3" selected>NO3</option>
-                <option value="NO4">NO4</option>
-                <option value="NO5">NO5</option>
-            </select>
-            <br><br>
-            <label for="company">Nettselskap:</label>
-            <select id="company" onchange="getEnergyPrice()">
-                <option value="Eviny" selected>Eviny</option>
-                <option value="Glitre">Glitre</option>
-            </select>
-            <p>Straum inkl. nettleige denne timen (kr/kwh): <strong><span class="inklNettleige"></span></strong></p>
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title">Ved, varmepumpe eller straum – kva lønner seg no?</h1>
+      <p class="site-subtitle">Basert på straumpris, nettleige, vedpris og temperatur.</p>
 
-            <br><br>
-            <h3>Ved</h3>
-            <label for="volume">Volum: </label>
-            <select id="volume" onchange="getEnergyPrice()">
-                <option value="11">30 L</option>
-                <option value="15">40 L</option>
-                <option value="22">60 L</option>
-                <option value="28">80L</option>
-                <option value="300">1000 L</option>
-                <option value="450" selected>1500 L</option>
-            </select>
-            <br><br>
-
-            <label for="purchasePrice">Kjøpspris: </label>
-            <input id="purchasePrice" value="2000" style="width: 40px" onchange="getEnergyPrice()">
-            <br><br>
-            <label for="efficiency">Omnens effektivitet: </label>
-            <input id="efficiency" value="77" style="width: 30px" onchange="getEnergyPrice()">
-            <p>Vedpris i kr/kwh: <strong><span id="woodPrice"></span></strong></p>
-
-            <br><br>
-
-            <h3>Varmepumpe</h3>
-            <label for="outsideTemp">Utetemperatur: </label>
-            <input id="outsideTemp" type="number" value="7" style="width: 40px" onchange="getEnergyPrice()">
-            <button onclick="getTemperature()">Hent</button>
-            <p>Varmepumpepris (kr/kwh): <strong><span class=heatpumpPrice></span></strong></p>
-
-            <br><br>
-
-
-            <div class="traffic-light">
-                <div id="red" class="light"></div>
-                <div id="yellow" class="light"></div>
-                <div id="green" class="light"></div>
-            </div>
-
-            <p id="red-text" style="display: none;">Raudt lys: bruk elektrisitet!</p>
-            <p id="yellow-text" style="display: none;">Gult lys: Det er lite forskjell. Varmepumpe vil nok lønne seg.</p>
-            <p id="green-text" style="display: none;">Grønt lys: fyr i peisen!</p>
-        </div>
-
-        <!-- Main Content -->
-        <div style="flex-grow: 1; padding: 10px;">
-            <div style="position: absolute; top: 10px; right: 10px;">
-                <button onclick="getEnergyPrice()" style="margin-top: 10px;">Oppdater</button>
-            </div>
-            <!-- Canvas for Chart.js --> 
-            <canvas id="energyChart" width="400" height="200"></canvas>
-            <br><br>
-            <div style="float: left; width: 600px; margin-left: 10px; text-align: left;">
-                <h3>Utrekning straumpris denne timen</h3>
-                <p>Full pris i sone: <span id="totalPrice"></span></p>
-                <p>Pris utan MVA: <span id="exVatPrice"></span></p>
-                <p>Straumstøtte: <span id="subsidizedPrice"></span></p>
-                <p>Pris med støtte: <span id="adjustedPrice"></span></p>
-                <p>Pris inkl. nettleige kr/kwh: <span class="inklNettleige"></span></p>
-                <br><br>
-                <h3>Varmepumpekalkulasjon</h3>
-                <p>For å berekne effektiviten til ei varmepumpe brukar vi Coefficient of Performance (COP), som viser kor mange einingar varme (eller kulde) pumpa gjev per eining elektrisitet den bruker. Til dømes, viss ei varmepumpe har ein COP på 3, betyr det at ho gjev 3 kWh varme for kvar 1 kWh elektrisitet som blir brukt. COP vil variere med utetemperaturen: </p>
-                <!--<label for="outsideTemp">Utetemperatur: </label>
-                <input id = "outsideTemp" type="number" value="7" style="width: 40px" onchange="getEnergyPrice()"> -->
-                <p>Ved oppgitt temperatur så kan vi estimere ein COP på: <span id=heatpumpCOP></span></p>
-                <p>Då kan vi dele straumprisen på COP, og varmepumpepris denne timen blir dermed (kr/kwh): <strong><span class=heatpumpPrice></span></strong></p>
-            </div>
-
-            
-        </div>
+      <div class="header-actions">
+        <button type="button" class="btn" onclick="getEnergyPrice()">Oppdater</button>
+        <span class="meta">Oppdatert: <span id="lastUpdated">–</span></span>
+      </div>
     </div>
+  </header>
 
-    <script src="script.js" defer></script> <!--Defer to ensure script runs after DOM is loaded-->
+  <main class="container">
+    <!-- 1) Primary decision / recommendation -->
+    <section class="card card-hero" aria-labelledby="decisionTitle">
+      <div class="hero-content">
+        <h2 id="decisionTitle" class="hero-title">Anbefaling</h2>
+        <!-- NOTE: This text is currently static. Later we can set it dynamically from JS. -->
+        <p class="hero-recommendation" id="recommendationText">—</p>
+        <p class="hero-support">
+          Straum: <strong><span class="inklNettleige">–</span> kr/kWh</strong>
+          <span class="dot">·</span>
+          Ved: <strong><span class="woodPrice">–</span> kr/kWh</strong>
+          <span class="dot">·</span>
+          Varmepumpe: <strong><span class="heatpumpPrice">–</span> kr/kWh</strong>
+        </p>
+      </div>
 
-<!--    <script src="script.js"></script> -->
+      <!-- Keep existing traffic light elements (used by current JS) -->
+      <aside class="hero-traffic" aria-label="Trafikklys">
+        <div class="traffic-light" role="img" aria-label="Trafikklys som viser anbefaling">
+          <div id="red" class="light"></div>
+          <div id="yellow" class="light"></div>
+          <div id="green" class="light"></div>
+        </div>
+        <p id="red-text" class="traffic-text" hidden>Raudt lys: bruk elektrisitet!</p>
+        <p id="yellow-text" class="traffic-text" hidden>Gult lys: Det er lite forskjell. Varmepumpe vil nok lønne seg.</p>
+        <p id="green-text" class="traffic-text" hidden>Grønt lys: fyr i peisen!</p>
+      </aside>
+    </section>
+
+    <!-- 2) Settings (collapsible) -->
+    <section class="card" aria-labelledby="settingsTitle">
+      <details open>
+        <summary class="details-summary" id="settingsTitle">Innstillingar</summary>
+
+        <div class="settings-grid">
+          <fieldset class="settings-group">
+            <legend>Straum</legend>
+
+            <label for="price-area">Prisområde</label>
+            <select id="price-area" onchange="getEnergyPrice()">
+              <option value="NO1">NO1</option>
+              <option value="NO2">NO2</option>
+              <option value="NO3" selected>NO3</option>
+              <option value="NO4">NO4</option>
+              <option value="NO5">NO5</option>
+            </select>
+
+            <label for="company">Nettselskap</label>
+            <select id="company" onchange="getEnergyPrice()">
+              <option value="Eviny" selected>Eviny</option>
+              <option value="Glitre">Glitre</option>
+            </select>
+
+            <p class="hint">Straum inkl. nettleige (kr/kWh): <strong><span class="inklNettleige">–</span></strong></p>
+          </fieldset>
+
+          <fieldset class="settings-group">
+            <legend>Ved</legend>
+
+            <label for="volume">Volum</label>
+            <select id="volume" onchange="getEnergyPrice()">
+              <option value="11">30 L</option>
+              <option value="15">40 L</option>
+              <option value="22">60 L</option>
+              <option value="28">80 L</option>
+              <option value="300">1000 L</option>
+              <option value="450" selected>1500 L</option>
+            </select>
+
+            <label for="purchasePrice">Kjøpspris (kr)</label>
+            <input id="purchasePrice" inputmode="numeric" value="2000" onchange="getEnergyPrice()" />
+
+            <label for="efficiency">Omnens effektivitet (%)</label>
+            <input id="efficiency" inputmode="numeric" value="77" onchange="getEnergyPrice()" />
+
+            <p class="hint">Vedpris (kr/kWh): <strong><span class="woodPrice">–</span></strong></p>
+          </fieldset>
+
+          <fieldset class="settings-group">
+            <legend>Varmepumpe</legend>
+
+            <label for="outsideTemp">Utetemperatur (°C)</label>
+            <div class="inline">
+              <input id="outsideTemp" type="number" value="7" onchange="getEnergyPrice()" />
+              <button type="button" class="btn btn-secondary" onclick="getTemperature()">Hent</button>
+            </div>
+
+            <p class="hint">Estimert COP: <strong><span class="heatpumpCOP">–</span></strong></p>
+            <p class="hint">Varmepumpepris (kr/kWh): <strong><span class="heatpumpPrice">–</span></strong></p>
+          </fieldset>
+        </div>
+      </details>
+    </section>
+
+    <!-- 3) Quick comparison cards -->
+    <section class="cards-3" aria-label="Prisoversikt">
+      <article class="card metric">
+        <h3>Straum</h3>
+        <p class="metric-value"><span class="inklNettleige">–</span> <span class="unit">kr/kWh</span></p>
+        <p class="metric-note">Inkl. nettleige & støtte</p>
+      </article>
+
+      <article class="card metric">
+        <h3>Ved</h3>
+        <p class="metric-value"><span id="woodPrice">–</span> <span class="unit">kr/kWh</span></p>
+        <p class="metric-note">Basert på vedkostnad</p>
+      </article>
+
+      <article class="card metric">
+        <h3>Varmepumpe</h3>
+        <p class="metric-value"><span class="heatpumpPrice">–</span> <span class="unit">kr/kWh</span></p>
+        <p class="metric-note">COP-justert pris</p>
+      </article>
+    </section>
+
+    <!-- 4) Chart -->
+    <section class="card" aria-labelledby="chartTitle">
+      <div class="card-header">
+        <h2 id="chartTitle">Pris gjennom døgnet</h2>
+        <div class="chart-toggles" aria-label="Vis linjer">
+          <!-- These are UI-only for now; wiring can be done later. -->
+          <label><input type="checkbox" checked /> Straum</label>
+          <label><input type="checkbox" checked /> Ved</label>
+          <label><input type="checkbox" checked /> Varmepumpe</label>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="energyChart" height="140"></canvas>
+      </div>
+
+      <p class="small">X-akse: timar (0–23). Y-akse: kr/kWh.</p>
+    </section>
+
+    <!-- 5) Details / methodology -->
+    <section class="card" aria-labelledby="calcTitle">
+      <details>
+        <summary class="details-summary" id="calcTitle">Korleis reknar vi?</summary>
+        <div class="prose">
+          <h3>Utrekning straumpris denne timen</h3>
+          <ul>
+            <li>Full pris i sone: <span id="totalPrice">–</span></li>
+            <li>Pris utan MVA: <span id="exVatPrice">–</span></li>
+            <li>Straumstøtte: <span id="subsidizedPrice">–</span></li>
+            <li>Pris med støtte: <span id="adjustedPrice">–</span></li>
+            <li>Pris inkl. nettleige: <span class="inklNettleige">–</span></li>
+          </ul>
+
+          <h3>Varmepumpekalkulasjon</h3>
+          <p>
+            COP (Coefficient of Performance) viser kor mange kWh varme pumpa gjev per kWh straum.
+            COP varierer med utetemperaturen.
+          </p>
+          <p>Estimert COP ved oppgitt temperatur: <strong><span class="heatpumpCOP">–</span></strong></p>
+          <p>Varmepumpepris denne timen: <strong><span class="heatpumpPrice">–</span></strong></p>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

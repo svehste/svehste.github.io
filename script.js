@@ -51,6 +51,10 @@ function getEnergyPrice() {
                 };
             });
             drawChart(energyPrices, woodPrice, currentHour, heatpumpPrices); // Draw the chart with fetched data
+            
+            const last = document.getElementById('lastUpdated');
+            if (last) last.textContent = new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+
     
             // Find the price for the current hour. Using Date.getTime() to compare the time_start and time_end with the current time to ensure the correct format.
             const currentHourPrice = data.find(item => {
@@ -79,7 +83,15 @@ function getWoodPrice(){
     const efficiency = document.getElementById('efficiency').value; 
 
     const woodPrice = purchasePrice / ((4.32 * weight) * (efficiency / 100));
-    document.getElementById('woodPrice').textContent = woodPrice.toFixed(2);
+    // Update the single main wood price element (keep if you still have exactly one id="woodPrice")
+    const main = document.getElementById('woodPrice');
+    if (main) main.textContent = woodPrice.toFixed(2);
+
+    // Update any additional placeholders
+    document.querySelectorAll('.woodPrice').forEach(node => {
+        node.textContent = woodPrice.toFixed(2);
+});
+
 
     return woodPrice;
 }
@@ -175,28 +187,45 @@ function updateHeatpumpPrice(value) {
 
 // Function to update the traffic light color based on the price
 function updateTrafficLight(price) {
-    //Remove all text and colors
-    document.getElementById('red').style.backgroundColor = '#333';
-    document.getElementById('yellow').style.backgroundColor = '#333';
-    document.getElementById('green').style.backgroundColor = '#333';
-    document.getElementById('red-text').style.display = 'none';
-    document.getElementById('yellow-text').style.display = 'none';
-    document.getElementById('green-text').style.display = 'none';
+  // Reset lights
+  document.getElementById('red').style.backgroundColor = '#333';
+  document.getElementById('yellow').style.backgroundColor = '#333';
+  document.getElementById('green').style.backgroundColor = '#333';
+  const heroIcon = document.getElementById('heroIcon');
 
-    const {inklNettleige} = calculatePrice(price); //Calculate the electricity price. The brackets to extract the inklNettleige value, since calculatePrice returns heatpumpPrice as well.
-    const woodPrice = getWoodPrice(); //Calculate the price of wood
+
+  // Reset texts (NEW: use hidden)
+  const redText = document.getElementById('red-text');
+  const yellowText = document.getElementById('yellow-text');
+  const greenText = document.getElementById('green-text');
+  redText.hidden = true;
+  yellowText.hidden = true;
+  greenText.hidden = true;
+
+  const { inklNettleige } = calculatePrice(price);
+  const woodPrice = getWoodPrice();
+
+  // Optional: update the big recommendation line if present
+  const rec = document.getElementById('recommendationText');
 
     if (inklNettleige >= woodPrice) {
         document.getElementById('green').style.backgroundColor = 'green';
-        document.getElementById('green-text').style.display = 'block';
-    } else if (woodPrice >= inklNettleige * 1.10) {
+        greenText.hidden = false;
+        if (rec) rec.textContent = '🔥 Fyr i peisen no';
+    }
+    else if (woodPrice >= inklNettleige * 1.10) {
         document.getElementById('red').style.backgroundColor = 'red';
-        document.getElementById('red-text').style.display = 'block';
-    } else {
+        redText.hidden = false;
+        if (rec) rec.textContent = '⚡ Bruk straum';
+    }
+    else {
         document.getElementById('yellow').style.backgroundColor = 'yellow';
-        document.getElementById('yellow-text').style.display = 'block';
+        yellowText.hidden = false;
+        if (rec) rec.textContent = '♻️ Lita forskjell – varmepumpe vil ofte lønne seg';
     }
 }
+
+
 
 /// Function for drawing the chart
 function drawChart(energyPrices, woodPrice, currentHour, heatpumpPrices) {
@@ -267,7 +296,14 @@ function heatpumpCOP() {
         COP = 1.6;
     }
 
-    document.getElementById('heatpumpCOP').textContent = COP.toFixed(2);
+    // Update primary COP element (single ID)
+    const mainCOP = document.getElementById('heatpumpCOP');
+    if (mainCOP) mainCOP.textContent = COP.toFixed(2);
+
+    // Update all other COP placeholders
+    document.querySelectorAll('.heatpumpCOP').forEach(node => {
+        node.textContent = COP.toFixed(2);
+    });
 
     return COP;
 }
