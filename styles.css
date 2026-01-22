@@ -227,7 +227,7 @@ select, input {
   transition: background-color 0.25s ease;
 }
 
-/* Responsive */
+/* Responsive - will look at this later
 @media (max-width: 960px) {
   .card-hero { grid-template-columns: 1fr 180px; }
 }
@@ -240,3 +240,4 @@ select, input {
 @media (max-width: 640px) {
   .chart-wrap { height: 280px; }
 }
+*/
