@@ -80,6 +80,7 @@ function getEnergyPrice() {
 function getWoodPrice(){
     const weight = document.getElementById('volume').value;
     const purchasePrice = document.getElementById('purchasePrice').value;
+    //const woodType = document.getElementById('woodType').value; <-- Currently not used
     const efficiency = document.getElementById('efficiency').value; 
 
     const woodPrice = purchasePrice / ((4.32 * weight) * (efficiency / 100));
