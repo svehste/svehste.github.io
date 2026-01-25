@@ -222,7 +222,7 @@ function updateTrafficLight(price) {
     else {
         document.getElementById('yellow').style.backgroundColor = 'yellow';
         yellowText.hidden = false;
-        if (rec) rec.textContent = '♻️ Lita forskjell – varmepumpe vil ofte lønne seg';
+        if (rec) rec.textContent = '♻️ Lite forskjell – varmepumpe vil ofte lønne seg';
     }
 }
 
